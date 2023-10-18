@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/Code Stuff/Vivado/Introduction to Hardware Security/Lab 1/Subtask 1/Subtask 1.xpr">
+<Project Version="7" Minor="49" Path="C:/Code Stuff/Vivado/Introduction-to-Hardware-Security/Lab 1/Subtask 1/Subtask 1.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="460fffe223a341c58928a514ce012550"/>
@@ -71,7 +71,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="RingOscillator"/>
+        <Option Name="TopModule" Val="slice"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
       </Config>
     </FileSet>
@@ -93,7 +93,7 @@
       <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="RingOscillator"/>
+        <Option Name="TopModule" Val="slice"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="TransportPathDelay" Val="0"/>
