@@ -22,83 +22,110 @@ module RingOscillator(
     logic ta0, tb0, ta1, tb1, ta2, tb2, ta3, tb3; 
     
     //slice X0Y1 (with enable) - 0
+    SLICE_ENABLE X0Y1(ta0,enable,ta1,tb1);
     
     //slice X0Y0 - 1
+    SLICE_NEG X0Y0(ta1,tb1,sel[0],bx[0],ta2,tb2);
     
     //slice X1Y1 - 2
+    SLICE_NEG X1Y1(ta2,tb2,sel[1],bx[1],ta3,tb3);
     
     //slice X1Y0 - 3
+    SLICE_BUF X1Y0(ta3,tb3,sel[2],bx[2],ta0);
     
-//    MUX Mx1 (.x(a),.y(b),.sel(c),.result(d));
-//    MUX MxEN (.x(a),.y(0),.sel(c),.result(d));
-//    NEG ngate(.x(a), .nx(b));
-
-    buf(a,b);
+    assign probe = ta0;
+    //assign LEDS[0] = probe;
 
 endmodule
 
-
-module slice_enable(
-    input clk,
-    input A, 
-    input B,
-    input sel, 
-    input enable,
-    input bx,
-    output logic curr,
-    output logic prev);
-    
-    logic t1,t2;
-    
-    LUT F(A,B,sel,enable,t1);
-    LUT G(A,B,sel,enable,t2);
-    
-    MUX M1(t2, t1, bx, curr); //flipped order on purpose
-
-endmodule
-
-module slice(
+module SLICE_NEG(
     input A, 
     input B,
     input sel, 
     input bx,
-    input enable,
-    output logic curr,
-    output logic prev);
+    output logic out1,
+    output logic out2
+    );
     
     logic t1,t2;
     
-    LUT F(A,B,sel,t1);
-    LUT G(A,B,sel,t2);
+    LUT_NEG F(.A(A),.B(B),.sel(sel),.out(t1));
+    LUT_NEG G(.A(A),.B(B),.sel(sel),.out(t2));
     
-    MUX M1(t2, t1, bx, curr); //flipped order on purpose
+    MUX M1(.x(t2), .y(t1), .sel(bx), .result(out1));
+    
+    //Pass through latch
+    LATCH(.D(out1),.Q(out2));
+    //assign out2 = out1;
+
+endmodule
+
+module SLICE_BUF(
+    input A, 
+    input B,
+    input sel, 
+    input bx,
+    output logic out1);
+    
+    logic t1,t2;
+    
+    LUT_BUF F(.A(A),.B(B),.sel(sel),.out(t1));
+    LUT_BUF G(.A(A),.B(B),.sel(sel),.out(t1));
+    
+    MUX M1(.x(t2), .y(t1), .sel(bx), .result(out1));
+
+endmodule
+
+
+module SLICE_ENABLE(
+    input A, 
+    input enable,
+    output logic out1,
+    output logic out2
+    );
+        
+    MUX M1(.x(A), .y(0), .sel(enable), .result(out1));
+    
+    //want latch here
+    LATCH(.D(out1),.Q(out2));
+    //assign out2 = out1;
 
 endmodule
 
 // need a Lut buffer or to re write this and include negations elsewhere
-module LUT(
+module LUT_NEG(
     input A, B, sel,
     output logic out);
     
-    logic t1;
-    
-    MUX MLT(~A,~B,sel,out);
+    MUX MLT(.x(~A), .y(~B), .sel(sel), .result(out));
         
     
 endmodule
 
-module LUT_enable(
-    input A, B, sel, enable,
+module LUT_BUF(
+    input A, B, sel,
     output logic out);
-    
-    logic t1;
-    
-    MUX MLT(~A,~B,sel,t1);
-     
-    MUX MMT(t1, 0, enable, gout);
-    
+
+    buf(A,a);
+    buf(B,b);
+    MUX MLT(.x(a), .y(b), .sel(sel), .result(out));
+        
     
 endmodule
+
+//module LUT_EN(
+//    input A, B, sel, enable,
+//    output logic out);
+    
+//    logic t1;
+    
+//    MUX MLT(~A,~B,sel,t1);
+//    MUX MLT(.x(t2), .y(t1), .sel(bx), .result(out1));
+     
+//    MUX MMT(t1, 0, enable, gout);
+    
+    
+//endmodule
 
 module MUX(
     
@@ -115,4 +142,14 @@ module MUX(
         endcase
     end
     
+endmodule
+
+module LATCH(
+    input D,
+    output logic Q);
+
+    always_comb begin
+        Q = D;
+    end
+
 endmodule
