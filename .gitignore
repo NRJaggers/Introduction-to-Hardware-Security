@@ -1,0 +1,20 @@
+#ignoring project files
+*/'*.cache'/
+*/'*.hw'/
+*/'*.runs'/
+*/'*.hbs'/
+*/'*.ip_user_files'/
+*/'*.sim'/
+*/'*.xpr'
+
+#ignoring types of extentions
+*.wdf
+*.lpr
+*.xpr
+
+#extra ignores
+Lab 1/Subtask_1/Subtask 1.cache/
+Lab 1/Subtask_1/Subtask 1.hw/
+Lab 1/Subtask_1/Subtask 1.ip_user_files/
+
+
