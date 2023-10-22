@@ -11,10 +11,33 @@
 *.wdf
 *.lpr
 *.xpr
+*.wpc
+*.xdc
+*.map
+*.out
+*.gnd
+*.0
+*.dcp
+*.xml
+*.txt
+*.rst
+*.js
+*.sh
+*.log
+*.bat
+*.tcl
+*.vds
+*.pb
+*.lpr
+*.jou
+*.rtd
+*.rpt
+*__synthesis_is_running__*
+*__synthesis_is_complete__*
 
 #extra ignores
 Lab 1/Subtask_1/Subtask 1.cache/
 Lab 1/Subtask_1/Subtask 1.hw/
 Lab 1/Subtask_1/Subtask 1.ip_user_files/
-
-
+Lab 1/Subtask_3/Subtask_3.runs/synth_1/__synthesis_is_running__
+Lab 1/Subtask_3/Subtask_3.runs/synth_1/__synthesis_is_complete__
