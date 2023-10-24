@@ -1,0 +1,18 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/LUT_Buffer.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/LUT_NOT_with_enable.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/Slice_2I_1O.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/configurable_RO_PUF.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/configurable_RO_Xin.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/main.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/slice_type1.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/slice_type2.sv" \
+"../../../../CPE426_Lab_1.srcs/sources_1/new/slice_type3.sv" \
+"../../../../CPE426_Lab_1.srcs/sim_1/new/main_tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
