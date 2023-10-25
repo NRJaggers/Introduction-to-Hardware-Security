@@ -36,7 +36,7 @@
 //   - completed: Output signal indicating if the STD counter is full
 // -----------------------------------------------------------------------------
 
-`define MAX_STD_COUNT 500
+`define MAX_STD_COUNT 500_000
 `define TRUE  1'b1
 `define FALSE 1'b0
 

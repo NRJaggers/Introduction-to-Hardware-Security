@@ -42,7 +42,7 @@
 `define num_RO  8
 // This is working. But does not help the PUF drifting problem.
 // Modify the MAX_STD_COUNT in configurable_RO_PUF instead.
-`define NUM_REPEAT 1    
+`define NUM_REPEAT 1   
 
 module puf_challenge_response(
     input logic CLK,                    // Clock input
@@ -75,6 +75,7 @@ module puf_challenge_response(
     logic [5:0] prev_challenge_lower_bits; // Previous switch configuration
     logic [3:0] repeat_counter = 4'b0000;  // Counter for repetitions
 
+
     // FSM state transition logic
     always_ff @(posedge CLK) begin
         state <= next_state;
@@ -85,17 +86,17 @@ module puf_challenge_response(
     always_comb begin
         next_state = state;
         case(state)
-            IDLE:       next_state = START;
-            START:      next_state = WAIT;
+            IDLE:                           next_state = START;
+            START:                          next_state = WAIT;
             WAIT:       if (count_complete) next_state = STORE;
-            STORE:      next_state = INCREMENT;
+            STORE:                          next_state = INCREMENT;
             INCREMENT:  if (index < `num_RO) next_state = START;
-                        else next_state = COMPARE;
+                        else                next_state = COMPARE;
             COMPARE:    if (comparison_done) begin
                             if ((prev_challenge_lower_bits != challenge_lower_bits) || recalculate) 
-                                next_state = IDLE;  // Transition to IDLE if switch config changed or recalculate is true
+                                            next_state = IDLE;  // Transition to IDLE if switch config changed or recalculate is true
                             else
-                                next_state = COMPARE;  // Loop in COMPARE if switch config is the same
+                                            next_state = COMPARE;  // Loop in COMPARE if switch config is the same
                         end
             default:    next_state = IDLE;
         endcase        
@@ -106,28 +107,29 @@ module puf_challenge_response(
         if (state == IDLE) begin
             index <= 4'b0000; // Reset upper challenges
             comparison_done <= `FALSE; // Reset flag at the beginning of each cycle
-        end
-        else if (state == START) challenge = {index, challenge_lower_bits}; // Update challenge bits
-        
-        else if (state == STORE) begin
+            
+            
+        end else if (state == START) begin
+            challenge = {index, challenge_lower_bits}; // Update challenge bits
+               
+        end else if (state == STORE) begin            
             // Only average if the index will not increment
             if (repeat_counter < `NUM_REPEAT - 1) begin
                 ro_count_array[index] <= (ro_count_out + ro_count_array[index]) >> 1;  
             end else begin
                 ro_count_array[index] <= ro_count_out;
             end
-        end
-        
-        else if (state == INCREMENT) begin
+            
+            
+        end else if (state == INCREMENT) begin
             if (repeat_counter >= `NUM_REPEAT - 1) begin
                 index <= index + 1;  // Increment index for challenge bit
                 repeat_counter <= 0;  // Reset the repeat counter
             end else begin
                 repeat_counter <= repeat_counter + 1;  // Increment the repeat counter
             end
-        end
             
-        else if (state == COMPARE) begin // Compare counters and generate response
+        end else if (state == COMPARE) begin // Compare counters and generate response
             for (int i = 0; i < `num_RO ; i = i + 1) begin
                 response[i] <= (ro_count_array[i] < ro_count_array[i+1]) ? `TRUE : `FALSE;
             end            

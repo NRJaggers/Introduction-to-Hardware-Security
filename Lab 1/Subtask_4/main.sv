@@ -21,9 +21,9 @@
 
 module main(
     input  logic CLK,               // Clock input, assumed to be 50 MHz
-    input  logic reset,             //Used for 7 segment display
+//    input  logic reset,             //Used for 7 segment display
     input  logic BTNC,              //Used to recalculate PUF
-    input  logic [14:0] SWITCHES,   // Switches to set the lower 6 bits of the challenge
+    input  logic [15:0] SWITCHES,   // Switches to set the lower 6 bits of the challenge
     output logic [3:0]  ANODES,     // anode signals of the 7-segment LED display
     output logic [6:0]  CATHODES,   // cathode patterns of the 7-segment LED display
     output logic [15:0] LEDS        // LED output
@@ -36,6 +36,7 @@ module main(
     logic hash_ready; // Ready signal from SHA128
     logic start_signal; // Signal to start new hash
     logic [15:0] display_value;  // Variable to hold the value to be displayed
+    logic reset = 1'b0;     //Dummy reset signal
     
     // Instantiate the puf_challenge_response module to interact with the PUF
     puf_challenge_response puf_inst (
@@ -47,15 +48,15 @@ module main(
     );
     
     // Instantiate the sha128_simple module
-    sha128_simple sha_inst (
-        .CLK(CLK),
-        .DATA_IN(challenge_response),
-        .RESET(reset), // Assuming you want to use the same reset
-        .START(start_signal), // Controlled start signal
-        .READY(hash_ready),
-        .DATA_OUT(hash_output)
-    );
-//    assign hash_output = 127'h1000_0111_0110_0101_0100_0011_0010_0001;
+//    sha128_simple sha_inst (
+//        .CLK(CLK),
+//        .DATA_IN(challenge_response),
+//        .RESET(reset), // Assuming you want to use the same reset
+//        .START(start_signal), // Controlled start signal
+//        .READY(hash_ready),
+//        .DATA_OUT(hash_output)
+//    );
+    assign hash_output = 127'h1000_0111_0110_0101_0100_0011_0010_;
     
     
     // Map the 8-bit response to LEDs 0 through 7
@@ -78,7 +79,7 @@ module main(
     // Logic for Seven-Segment Display based on SWITCHES[15:12]
     always_comb begin
         logic [3:0] switch_decode;   // Variable to hold the decoded switch value        
-        switch_decode = SWITCHES[14:11];  // Extract the relevant switch bits
+        switch_decode = SWITCHES[15:12];  // Extract the relevant switch bits
         
         if (switch_decode == 4'b0000) begin
             // When switches are 0000, display challenge and response concatenation
