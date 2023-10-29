@@ -1,7 +1,3 @@
-#exceptions
-!**/constrs_1/**/*.xdc
-!**/constrs_1/*.xdc
-
 #ignoring folders
 **/tmp/**
 
@@ -35,6 +31,10 @@
 *.rpx
 *.info
 *.xdc
+
+#exceptions
+!**/constrs_1/**/*.xdc
+!**/constrs_1/*.xdc
 
 #extra ignores
 
