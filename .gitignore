@@ -1,3 +1,10 @@
+#exceptions
+!**/constrs_1/**/*.xdc
+!**/constrs_1/*.xdc
+
+#ignoring folders
+**/tmp/**
+
 #ignoring types of extentions
 *.wdf
 *.lpr
@@ -29,7 +36,5 @@
 *.info
 *.xdc
 
+#extra ignores
 
-#exceptions
-!**/constrs_1/**/*.xdc
-!**/constrs_1/*.xdc
