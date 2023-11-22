@@ -66,37 +66,64 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/imports/rtl/if/uart_if.sv">
+      <File Path="$PSRCDIR/sources_1/imports/UART/baud_rate_generator.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/SystemVerilog-UART-master/SystemVerilog-UART-master/rtl/if/uart_if.sv"/>
-          <Attr Name="ImportTime" Val="1698564483"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/baud_rate_generator.v"/>
+          <Attr Name="ImportTime" Val="1700624533"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/rtl/uart_rx.sv">
+      <File Path="$PSRCDIR/sources_1/imports/UART/debounce_explicit.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/SystemVerilog-UART-master/SystemVerilog-UART-master/rtl/uart_rx.sv"/>
-          <Attr Name="ImportTime" Val="1698564483"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/debounce_explicit.v"/>
+          <Attr Name="ImportTime" Val="1700624533"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/rtl/uart_tx.sv">
+      <File Path="$PSRCDIR/sources_1/imports/UART/fifo.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/SystemVerilog-UART-master/SystemVerilog-UART-master/rtl/uart_tx.sv"/>
-          <Attr Name="ImportTime" Val="1698564483"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/fifo.v"/>
+          <Attr Name="ImportTime" Val="1700624533"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/rtl/uart.sv">
+      <File Path="$PSRCDIR/sources_1/imports/UART/uart_receiver.v">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/SystemVerilog-UART-master/SystemVerilog-UART-master/rtl/uart.sv"/>
-          <Attr Name="ImportTime" Val="1698564483"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/uart_receiver.v"/>
+          <Attr Name="ImportTime" Val="1700624534"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/UART/uart_top.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/uart_top.v"/>
+          <Attr Name="ImportTime" Val="1700624534"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/UART/uart_transmitter.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/uart_transmitter.v"/>
+          <Attr Name="ImportTime" Val="1700624534"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/UART/uart_test.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Aquired Modules/UART/uart_test.v"/>
+          <Attr Name="ImportTime" Val="1700624534"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -158,28 +185,10 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256_functions.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha128_simple.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256_functions.vhd"/>
-          <Attr Name="ImportTime" Val="1696377577"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256_constants.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256_constants.vhd"/>
-          <Attr Name="ImportTime" Val="1696377577"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256.vhd"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha128_simple.vhd"/>
           <Attr Name="ImportTime" Val="1696377577"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -194,18 +203,46 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha128_simple.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256_constants.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha128_simple.vhd"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256_constants.vhd"/>
           <Attr Name="ImportTime" Val="1696377577"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256_functions.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256_functions.vhd"/>
+          <Attr Name="ImportTime" Val="1696377577"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/Lab1_Provided_Code/sha256.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../Lab 1/Lab1_Provided_Code/sha256.vhd"/>
+          <Attr Name="ImportTime" Val="1696377577"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/rtl/if/uart_if.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/SystemVerilog-UART-master/SystemVerilog-UART-master/rtl/if/uart_if.sv"/>
+          <Attr Name="ImportTime" Val="1698564483"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="uart"/>
+        <Option Name="TopModule" Val="uart_test"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
@@ -216,8 +253,16 @@
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/constrs_1/imports/UART/uart_const.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Users/Nathan Jaggers/Downloads/UART/uart_const.xdc"/>
+          <Attr Name="ImportTime" Val="1700624534"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
       <Config>
-        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_1/new/Basys3_Board.xdc"/>
+        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_1/imports/UART/uart_const.xdc"/>
         <Option Name="ConstrsType" Val="XDC"/>
       </Config>
     </FileSet>
