@@ -31,6 +31,25 @@
 *.rpx
 *.info
 *.xdc
+*.wdb
+*glbl*
+*.prj
+*.obj
+*.c
+*.wdm
+*.dbg
+*.mem
+*.reloc
+*.rlx
+*.rtti
+*.svtype
+*.type
+*.xdbg
+*.exe
+*.ini
+*.sdb
+*.rlx
+
 
 #exceptions
 !**/constrs_1/**/*.xdc
@@ -38,3 +57,4 @@
 
 #extra ignores
 
+Course Project/HWT_Project/HWT_Project.sim/sim_1/behav/xsim/glbl.v
