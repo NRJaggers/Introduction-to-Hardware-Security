@@ -34,6 +34,8 @@ module uart_test(
             .reset(reset),
             .read_uart(btn_tick),
             .write_uart(btn_tick),
+//            .read_uart(btn),   //bypass for sim
+//            .write_uart(btn),  //bypass for sim
             .rx(rx),
             .write_data(rec_data1),
             .rx_full(rx_full),

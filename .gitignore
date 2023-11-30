@@ -49,6 +49,7 @@
 *.ini
 *.sdb
 *.rlx
+*.wcfg
 
 
 #exceptions
@@ -57,4 +58,3 @@
 
 #extra ignores
 
-Course Project/HWT_Project/HWT_Project.sim/sim_1/behav/xsim/glbl.v

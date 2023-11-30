@@ -78,10 +78,11 @@ module uart_test_sim();
         
         //stop bit
         rx = 1'b1;
+        #20800;
         
         //button press
         btn = 1'b1;
-        #1000;
+        #500000;
         btn = 1'b0;
         //rx = 1'b0;
         
