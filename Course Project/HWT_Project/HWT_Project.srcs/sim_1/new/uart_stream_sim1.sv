@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module uart_stream_sim();
+module uart_stream_sim1();
 
     //mimic input and outputs
     logic clk;
@@ -52,16 +52,33 @@ module uart_stream_sim();
     //stimulus variables 
     logic [7:0] a = 8'h61;
     
-    //test stimulus
+//test stimulus
     initial begin
-        rx = 1'b0;
+        reset = 1'b1;
+        rx = 1'b1;
+        #100
+        
+        reset = 1'b0;      
         #10000;
-             
+        
+        
+        //start bit
+        rx = 1'b0;
+        #651
+        rx = 1'b1;
+        #20800
+        
         for (int i = 0; i<8; i++)begin
             rx = a[i];
-            #700;
+            #20800;
         end
+        
+        //stop bit
+        rx = 1'b1;
+        #20800;
+        
     end
+
     
     
 endmodule
