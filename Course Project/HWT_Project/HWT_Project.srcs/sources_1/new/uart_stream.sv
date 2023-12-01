@@ -46,7 +46,7 @@ module uart_stream
     wire tx_done_tick;                  // data transmission complete
     reg  tx_empty;                      // Tx FIFO has no data to transmit
     wire tx_start;             
-    wire [DBITS-1:0] tx_data_in;        // from Tx FIFO to UART transmitter
+    reg  [DBITS-1:0] tx_data_in;        // from Tx FIFO to UART transmitter
     reg  [DBITS-1:0] rx_data_out;       // from UART receiver to Rx FIFO
     
     // Instantiate Modules for UART Core
