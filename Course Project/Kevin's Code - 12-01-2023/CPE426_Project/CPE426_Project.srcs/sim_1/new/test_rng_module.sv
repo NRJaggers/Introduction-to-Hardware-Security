@@ -18,6 +18,7 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+`define ONE_CLOCK_CYCLE 10
 module test_rng_module;
 
     // Testbench Signals
@@ -49,25 +50,32 @@ module test_rng_module;
         tb_uart_rx = 0;
 
         // Reset the module
-        #10;
+        #15;
         tb_reset = 0;
-
+        #1000;
+        
         // Simulate UART commands (this is a placeholder; actual implementation will depend on your UART protocol)
         #100;
         tb_uart_rx = 1; // Example of setting UART_RX to trigger a command
-        #100;
+        #`ONE_CLOCK_CYCLE;        
+        tb_uart_rx = 0;
+        
+        #`ONE_CLOCK_CYCLE;
+        #`ONE_CLOCK_CYCLE;
+        #`ONE_CLOCK_CYCLE;
+        #`ONE_CLOCK_CYCLE;
+        #`ONE_CLOCK_CYCLE;
+        
+        tb_uart_rx = 1; // Example of setting UART_RX to trigger a command
+        #`ONE_CLOCK_CYCLE;
         tb_uart_rx = 0;
 
         // Continue simulation for a certain period
-        #1000;
+        #500;
 
         // End the simulation
         $finish;
     end
 
-    // Monitor and Display Output
-    initial begin
-        $monitor("Time = %t, Random Number = %d", $time, tb_random_number);
-    end
 
 endmodule
