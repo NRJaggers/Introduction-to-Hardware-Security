@@ -27,18 +27,14 @@ module uart_stream_sim1();
     logic reset;
     logic rx;
     logic tx;    
-    logic [3:0] an;
-    logic [0:6] seg;
     logic [7:0] LED;
     
     uart_stream DUT (
-        .clk_100MHz(clk),
+        .clock(clk),
         .reset(reset),
-        .rx(rx),
-        .tx(tx),
-        .an(an),
-        .seg(seg),
-        .LED(LED)
+        .LED(LED),
+        .i_uart_rx(rx),
+        .o_uart_tx(tx)
         );
     
     //generate clock
@@ -51,6 +47,11 @@ module uart_stream_sim1();
     
     //stimulus variables 
     logic [7:0] a = 8'h61;
+    logic [31:0] rng = 32'h2E524E47; //".RNG"
+    
+    int start = 0;
+    int stop = 0;
+        
     
 //test stimulus
     initial begin
@@ -62,23 +63,44 @@ module uart_stream_sim1();
         #10000;
         
         
-        //start bit
-        rx = 1'b0;
-        #651
-        rx = 1'b1;
-        #20800
+//        //start bit
+//        rx = 1'b0;
+//        #651
+//        rx = 1'b1;
+//        #20800
         
-        for (int i = 0; i<8; i++)begin
-            rx = a[i];
+//        for (int i = 0; i<8; i++)begin
+//            rx = a[i];
+//            #20800;
+//        end
+        
+//        //stop bit
+//        rx = 1'b1;
+//        #20800;
+        
+
+        for (int j = 0; j<4; j++) begin
+        
+            start = j*8;
+            stop = (j*8)+8;
+            
+            //start bit
+            rx = 1'b0;
+            #651
+            rx = 1'b1;
+            #20800
+            
+            for (int i = start; i< stop; i++)begin
+                rx = rng[i];
+                #20800;
+            end
+            
+            //stop bit
+            rx = 1'b1;
             #20800;
+        
         end
         
-        //stop bit
-        rx = 1'b1;
-        #20800;
-        
     end
-
-    
-    
+   
 endmodule

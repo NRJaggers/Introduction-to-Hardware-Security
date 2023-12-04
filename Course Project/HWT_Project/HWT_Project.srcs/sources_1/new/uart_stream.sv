@@ -2,13 +2,13 @@
 
 module uart_stream(
   input        clock,
+  input        reset,
   output[7:0]  LED,
   input        i_uart_rx,
   output       o_uart_tx
-  //add reset?
 );
 
-    wire rx_dv, tx_dv;
+    wire rx_dv, tx_done;
     wire tx_active, tx_serial;
     wire[7:0] rx_data, tx_data;
     
@@ -23,7 +23,7 @@ module uart_stream(
 //    (
 //    .clk(clock),
 //    .rx_done(rx_dv),
-//    .tx_done(tx_dv),
+//    .tx_done(tx_done),
 //    .rx_data(rx_data),
 //    .tx_data(tx_data),
 //    .tx_ready(tx_start)
@@ -33,9 +33,10 @@ module uart_stream(
     command_processor UART_CU
     (
         .clk(clock),
-        .reset(),
+        .reset(reset),
         .rx_data(rx_data),
         .rx_data_ready(rx_dv),
+        .tx_data_done(tx_done),
         .process_rng(),
         .custom_seed(),
         .set_custom_seed(),
@@ -50,7 +51,7 @@ module uart_stream(
      .tx_data(tx_data),
      .tx_active(tx_active),
      .tx_serial(tx_serial),
-     .tx_done(tx_dv));
+     .tx_done(tx_done));
     
     assign o_uart_tx = tx_active ? tx_serial : 1'b1; 
     

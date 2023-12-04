@@ -31,11 +31,13 @@
 // =============================================================================
 `define TEST_SEED           32'h85ad    //Test Seed
 
+
 module command_processor(
     input wire clk,
     input wire reset,
     input wire [7:0] rx_data,
     input wire rx_data_ready,
+    input wire tx_data_done,
     output logic process_rng,
     output logic [31:0] custom_seed,
     output logic set_custom_seed,
@@ -45,7 +47,9 @@ module command_processor(
 );
 
     localparam CHAR_DOT = 8'h2E; // ASCII for '.'
-
+    localparam CHAR_CR  = 8'h0D; // ASCII for carriage return
+    localparam MAX_CHARS = 8;
+    
     // State machine states
     typedef enum {
         IDLE,
@@ -55,13 +59,13 @@ module command_processor(
     state_t current_state, next_state;
 
     // Buffer to store incoming command
-    logic [7:0] command_buffer[3:0]; // Adjust size based on expected command length
+    logic [7:0] command_buffer[MAX_CHARS-1:0]; // Adjust size based on expected command length
     logic [2:0] char_count; // Counter for received characters
     integer i;
     
     // UART echo connections/signals
     logic [7:0] tx_echo, tx_cmd;
-    logic tx_sel;
+    logic tx_sel = 0;
     
 
     // State machine for command processing
@@ -81,30 +85,38 @@ module command_processor(
             // Reset logic
             next_state <= IDLE;
             char_count <= 0;
-            for (i = 0; i < 4; i++) command_buffer[i] <= 8'd0;
+            for (i = 0; i < MAX_CHARS; i++) command_buffer[i] <= 8'd0;
+            tx_sel <= 0;
             tx_echo <= 8'h00; // Default UART transmit data
             tx_cmd <= 8'h00;
+            tx_data_valid <= 0;
         end
         else begin
             // Default values
             process_rng <= 0;
             set_custom_seed <= 0;
             get_seed <= 0;
-            tx_data_valid <= 0;
-            tx_sel <= 0;
+//            tx_data_valid <= 0;
+//            tx_sel <= 0;
 //            tx_echo <= 8'h00; // Default UART transmit data
 //            tx_cmd <= 8'h00;
             
             //echo logic and tx mux
-            if (rx_data_ready) begin
-                tx_echo = rx_data;
-                tx_data_valid <= 1;
-            end
+//            if (rx_data_ready) begin
+//                tx_echo = rx_data;
+//                tx_data_valid <= 1;
+//            end
             
             if (tx_sel)
-                tx_data <= tx_cmd;
+                tx_data = tx_cmd;
             else
-                tx_data <= tx_echo;
+                tx_data = tx_echo;
+                
+            if (tx_data_done)begin
+                tx_data_valid <= 0;
+                tx_sel <= 0;
+            end
+            
     
             //state machine
             case (current_state)        
@@ -112,20 +124,20 @@ module command_processor(
                     if (rx_data_ready && rx_data == CHAR_DOT) begin
                         next_state <= WAIT_FOR_COMMAND;
                         char_count <= 0;
-                        for (i = 0; i < 4; i++) command_buffer[i] <= 8'd0;
+                        for (i = 0; i < MAX_CHARS; i++) command_buffer[i] <= 8'd0;
                     end
                 end
                 
                 WAIT_FOR_COMMAND: begin
                     if (rx_data_ready) begin
                         // Store the received character directly at the index specified by char_count
-                        if (char_count < 3) begin // Ensure char_count does not exceed buffer size
+                        if (char_count < MAX_CHARS) begin // Ensure char_count does not exceed buffer size
                             command_buffer[char_count] <= rx_data;
                             char_count <= char_count + 1;
                         end
                 
                         // Transition to PROCESS_CMD state after four characters have been received
-                        if (char_count >= 3) begin
+                        if (char_count >= MAX_CHARS || rx_data == CHAR_CR) begin
                             next_state <= PROCESS_CMD;
                             char_count <= 0; // Reset char_count for next command
                         end
