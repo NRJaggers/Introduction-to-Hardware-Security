@@ -58,6 +58,11 @@ module command_processor(
     logic [7:0] command_buffer[3:0]; // Adjust size based on expected command length
     logic [2:0] char_count; // Counter for received characters
     integer i;
+    
+    // UART echo connections/signals
+    logic [7:0] tx_echo, tx_cmd;
+    logic tx_sel;
+    
 
     // State machine for command processing
 //    always @(posedge clk or posedge reset) begin
@@ -70,7 +75,6 @@ module command_processor(
 //        end
 //    end
 
-
     // Command processing logic
     always_ff @(posedge clk) begin
         if (reset) begin
@@ -78,6 +82,8 @@ module command_processor(
             next_state <= IDLE;
             char_count <= 0;
             for (i = 0; i < 4; i++) command_buffer[i] <= 8'd0;
+            tx_echo <= 8'h00; // Default UART transmit data
+            tx_cmd <= 8'h00;
         end
         else begin
             // Default values
@@ -85,8 +91,22 @@ module command_processor(
             set_custom_seed <= 0;
             get_seed <= 0;
             tx_data_valid <= 0;
-            tx_data <= 8'h00; // Default UART transmit data
+            tx_sel <= 0;
+//            tx_echo <= 8'h00; // Default UART transmit data
+//            tx_cmd <= 8'h00;
+            
+            //echo logic and tx mux
+            if (rx_data_ready) begin
+                tx_echo = rx_data;
+                tx_data_valid <= 1;
+            end
+            
+            if (tx_sel)
+                tx_data <= tx_cmd;
+            else
+                tx_data <= tx_echo;
     
+            //state machine
             case (current_state)        
                 IDLE: begin
                     if (rx_data_ready && rx_data == CHAR_DOT) begin
@@ -118,8 +138,9 @@ module command_processor(
                             command_buffer[1] == 8'h4E && // ASCII for 'N'
                             command_buffer[2] == 8'h47) begin // ASCII for 'G'
                             process_rng <= 1;
-                            tx_data <= 8'h52; // ASCII for 'R', as a placeholder response
+                            tx_cmd <= 8'h52; // ASCII for 'R', as a placeholder response
                             tx_data_valid <= 1;
+                            tx_sel <= 1;
                         end
                         // Check for '.TEST' command (simplified, does not parse 'num')
                         else if (command_buffer[0] == 8'h54 && // ASCII for 'T'
@@ -127,21 +148,25 @@ module command_processor(
                                  command_buffer[2] == 8'h53) begin // ASCII for 'S'
                             set_custom_seed <= 1;
                             custom_seed <= `TEST_SEED; // Using a predefined test seed
-                            tx_data <= 8'h54; // ASCII for 'T', as a placeholder response
+                            tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
                             tx_data_valid <= 1;
+                            tx_sel <= 1;
                         end
                         // Check for '.SEED' command
                         else if (command_buffer[0] == 8'h53 && // ASCII for 'S'
                                  command_buffer[1] == 8'h45 && // ASCII for 'E'
                                  command_buffer[2] == 8'h45) begin // ASCII for 'E'
                             get_seed <= 1;
-                            tx_data <= 8'h53; // ASCII for 'S', as a placeholder response
+                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
                             tx_data_valid <= 1;
+                            tx_sel <= 1;
                         end
                         else begin
                             // For unrecognized commands, echo back the last character received
-                            tx_data <= command_buffer[3];
+                            //tx_data <= command_buffer[3];
+                            tx_cmd <= 8'h00;
                             tx_data_valid <= 1;
+                            tx_sel <= 1;
                         end
                     next_state <= IDLE;
                 end

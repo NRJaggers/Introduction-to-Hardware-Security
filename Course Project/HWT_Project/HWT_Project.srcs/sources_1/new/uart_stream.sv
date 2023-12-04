@@ -19,14 +19,29 @@ module uart_stream(
      .rx_data(rx_data));
      
     //Control input output behavior with control unit
-    control_unit UART_CU
+//    control_unit UART_CU
+//    (
+//    .clk(clock),
+//    .rx_done(rx_dv),
+//    .tx_done(tx_dv),
+//    .rx_data(rx_data),
+//    .tx_data(tx_data),
+//    .tx_ready(tx_start)
+//    );
+
+    //Control input output behavior with control unit
+    command_processor UART_CU
     (
-    .clk(clock),
-    .rx_done(rx_dv),
-    .tx_done(tx_dv),
-    .rx_data(rx_data),
-    .tx_data(tx_data),
-    .tx_ready(tx_start)
+        .clk(clock),
+        .reset(),
+        .rx_data(rx_data),
+        .rx_data_ready(rx_dv),
+        .process_rng(),
+        .custom_seed(),
+        .set_custom_seed(),
+        .get_seed(),
+        .tx_data(tx_data),
+        .tx_data_valid(tx_start)  
     );
     
     uart_tx #(.CLKS_PER_BIT(10417)) uart_tx_inst
