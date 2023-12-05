@@ -10,7 +10,8 @@ module rng_module(
     input wire reset,
     input wire uart_rx, // UART Receive
     output wire uart_tx, // UART Transmit
-    output wire [31:0] random_number
+    output wire [31:0] random_number,
+    output wire [31:0] seed_used
 );
 
     // Internal signals
@@ -61,6 +62,8 @@ module rng_module(
         .seed(time_match ? `TEST_SEED : hash_output[31:0]), // Ternary operator for seed selection
         .random_number(rng_output)
     );
+    
+
 
     // Edge detection for uart_rx and time comparison
     logic uart_rx_prev;
@@ -92,6 +95,7 @@ module rng_module(
         end
     end
 
-    assign random_number = rng_output;
+    assign random_number = rng_output;    
+    assign seed_used = (time_match ? `TEST_SEED : hash_output[31:0]);
 
 endmodule

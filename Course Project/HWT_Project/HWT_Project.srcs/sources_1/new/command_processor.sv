@@ -73,7 +73,9 @@ module command_processor(
     //RNG signals
     //logic [31:0] rand_num = 32'hCAFE;
     //logic [31:0] rand_num = 32'hEFAC;
-    logic [31:0] rand_num = 32'hCCCC6666;
+    //logic [31:0] rand_num = 32'hCCCC6666;
+    logic [31:0] rand_num; 
+    logic [31:0] seed_used;
     logic [6:0] digit_count;
     
 
@@ -164,7 +166,7 @@ module command_processor(
                             digit_count <= 32;
                             
                             //maybe keep some or all of these here?
-//                            process_rng <= 1;
+                            process_rng <= 1;
 //                            tx_cmd <= 8'h52; // ASCII for 'R', as a placeholder response
 //                            tx_data_valid <= 1;
 //                            tx_sel <= 1;
@@ -187,6 +189,7 @@ module command_processor(
                                  command_buffer[2] == 8'h45) begin // ASCII for 'E'
                                  
                             next_state <= SEED;
+                            digit_count <= 32;
                             
 //                            get_seed <= 1;
 //                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
@@ -205,9 +208,7 @@ module command_processor(
                 end
                 
                 RNG: begin
-                    //keep these here or when processing cmd
-                    //process_rng <= 1;
-                      
+                    //start printing out the random number
                     case (rand_num[digit_count-1])
                         1'b0: tx_cmd <= 8'h30;
                         1'b1: tx_cmd <= 8'h31;                        
@@ -238,12 +239,23 @@ module command_processor(
                 end
                 
                 SEED: begin
-                    get_seed <= 1;
-                    tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
-                    tx_data_valid <= 1;
-                    tx_sel <= 1;
+                    //start printing out the seed
+                    case (seed_used[digit_count-1])
+                        1'b0: tx_cmd <= 8'h30;
+                        1'b1: tx_cmd <= 8'h31;                        
+                    endcase
                     
-                    next_state <= IDLE;
+                    if (tx_data_done)
+                        digit_count <= digit_count - 1;
+                    
+                    //not sure if signed or unsigned
+                    if (digit_count <=0 || digit_count > 33) begin
+                        next_state <= IDLE;
+                    end
+                    else begin
+                        tx_data_valid <= 1;
+                        tx_sel <= 1;
+                    end
                 end
                                
             endcase
@@ -255,8 +267,10 @@ module command_processor(
     rng_module rng_gen
     (
         .clk(clk),
-        .reset(reset), 
-        .random_number() // use rand_num
+        .reset(reset),
+        .uart_rx(process_rng), 
+        .random_number(rand_num), // use rand_num
+        .seed_used(seed_used)
     );
 
 endmodule
