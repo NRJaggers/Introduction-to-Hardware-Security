@@ -35,24 +35,24 @@ module rng_module(
     // !!!  THIS IS NOT READY YET  !!! 
     // Still need control logic to address the ready timing!!!
     // Instantiate SHA128_simple 
-    sha128_simple sha_module (
-        .CLK(clk),
-        .DATA_IN(time_stamp[15:0]), // Assuming lower 16 bits of time_stamp are used
-        .RESET(reset),
-        .START(reseed_rng), // Trigger on reseed signal
-        .READY(sha_ready),
-        .DATA_OUT(hash_output)
-    );
+//    sha128_simple sha_module (
+//        .CLK(clk),
+//        .DATA_IN(time_stamp[15:0]), // Assuming lower 16 bits of time_stamp are used
+//        .RESET(reset),
+//        .START(reseed_rng), // Trigger on reseed signal
+//        .READY(sha_ready),
+//        .DATA_OUT(hash_output)
+//    );
 
    // DUMMY HASH FUNCTION in place of SHA. Used for faster simulation.
-//    simple_hash #(
-//        .N(`CLOCK_COUNTER_WIDTH)
-//    ) hash_module (
-//        .clk(clk),
-//        .reset(reset),
-//        .input_data(`TIME_THRESHOLD == time_diff ? time_match : time_stamp),
-//        .hash_value(hash_output)
-//    );
+    simple_hash #(
+        .N(`CLOCK_COUNTER_WIDTH)
+    ) hash_module (
+        .clk(clk),
+        .reset(reset),
+        .input_data(`TIME_THRESHOLD == time_diff ? time_match : time_stamp),
+        .hash_value(hash_output)
+    );
     
     // Instantiate the actual RNG block (pseudo-random number generator)
     prng prng_block(

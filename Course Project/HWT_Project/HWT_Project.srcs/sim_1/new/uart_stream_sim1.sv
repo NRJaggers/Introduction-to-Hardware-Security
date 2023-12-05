@@ -47,7 +47,7 @@ module uart_stream_sim1();
     
     //stimulus variables 
     logic [7:0] a = 8'h61;
-    logic [31:0] rng = 32'h2E524E47; //".RNG"
+    logic [63:0] rng = 32'h2E524E470D; //".RNG/CR"
     
     int start = 0;
     int stop = 0;
@@ -79,7 +79,7 @@ module uart_stream_sim1();
 //        #20800;
         
 
-        for (int j = 0; j<4; j++) begin
+        for (int j = 0; j<8; j++) begin
         
             start = j*8;
             stop = (j*8)+8;

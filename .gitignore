@@ -51,7 +51,7 @@
 *.rlx
 *.wcfg
 *.str
-
+*.vdb
 
 #exceptions
 !**/constrs_1/**/*.xdc
@@ -59,4 +59,5 @@
 
 #extra ignores
 Course
+
 

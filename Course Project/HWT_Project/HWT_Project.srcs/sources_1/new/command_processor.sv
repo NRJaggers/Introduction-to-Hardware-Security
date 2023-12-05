@@ -54,18 +54,27 @@ module command_processor(
     typedef enum {
         IDLE,
         WAIT_FOR_COMMAND,
-        PROCESS_CMD
+        PROCESS_CMD,
+        RNG,
+        TEST,
+        SEED
     } state_t;
     state_t current_state, next_state;
 
     // Buffer to store incoming command
     logic [7:0] command_buffer[MAX_CHARS-1:0]; // Adjust size based on expected command length
-    logic [2:0] char_count; // Counter for received characters
+    logic [3:0] char_count; // Counter for received characters
     integer i;
     
     // UART echo connections/signals
     logic [7:0] tx_echo, tx_cmd;
     logic tx_sel = 0;
+    
+    //RNG signals
+    //logic [31:0] rand_num = 32'hCAFE;
+    //logic [31:0] rand_num = 32'hEFAC;
+    logic [31:0] rand_num = 32'hCCCC6666;
+    logic [6:0] digit_count;
     
 
     // State machine for command processing
@@ -85,6 +94,7 @@ module command_processor(
             // Reset logic
             next_state <= IDLE;
             char_count <= 0;
+            digit_count <=32;
             for (i = 0; i < MAX_CHARS; i++) command_buffer[i] <= 8'd0;
             tx_sel <= 0;
             tx_echo <= 8'h00; // Default UART transmit data
@@ -96,7 +106,7 @@ module command_processor(
             process_rng <= 0;
             set_custom_seed <= 0;
             get_seed <= 0;
-//            tx_data_valid <= 0;
+            tx_data_valid <= 0;
 //            tx_sel <= 0;
 //            tx_echo <= 8'h00; // Default UART transmit data
 //            tx_cmd <= 8'h00;
@@ -113,7 +123,7 @@ module command_processor(
                 tx_data = tx_echo;
                 
             if (tx_data_done)begin
-                tx_data_valid <= 0;
+                //tx_data_valid <= 0;
                 tx_sel <= 0;
             end
             
@@ -149,29 +159,39 @@ module command_processor(
                         if (command_buffer[0] == 8'h52 && // ASCII for 'R'
                             command_buffer[1] == 8'h4E && // ASCII for 'N'
                             command_buffer[2] == 8'h47) begin // ASCII for 'G'
-                            process_rng <= 1;
-                            tx_cmd <= 8'h52; // ASCII for 'R', as a placeholder response
-                            tx_data_valid <= 1;
-                            tx_sel <= 1;
+                            
+                            next_state <= RNG;
+                            digit_count <= 32;
+                            
+                            //maybe keep some or all of these here?
+//                            process_rng <= 1;
+//                            tx_cmd <= 8'h52; // ASCII for 'R', as a placeholder response
+//                            tx_data_valid <= 1;
+//                            tx_sel <= 1;
                         end
                         // Check for '.TEST' command (simplified, does not parse 'num')
                         else if (command_buffer[0] == 8'h54 && // ASCII for 'T'
                                  command_buffer[1] == 8'h45 && // ASCII for 'E'
                                  command_buffer[2] == 8'h53) begin // ASCII for 'S'
-                            set_custom_seed <= 1;
-                            custom_seed <= `TEST_SEED; // Using a predefined test seed
-                            tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
-                            tx_data_valid <= 1;
-                            tx_sel <= 1;
+                            next_state <= TEST;
+                            
+//                            set_custom_seed <= 1;
+//                            custom_seed <= `TEST_SEED; // Using a predefined test seed
+//                            tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
+//                            tx_data_valid <= 1;
+//                            tx_sel <= 1;
                         end
                         // Check for '.SEED' command
                         else if (command_buffer[0] == 8'h53 && // ASCII for 'S'
                                  command_buffer[1] == 8'h45 && // ASCII for 'E'
                                  command_buffer[2] == 8'h45) begin // ASCII for 'E'
-                            get_seed <= 1;
-                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
-                            tx_data_valid <= 1;
-                            tx_sel <= 1;
+                                 
+                            next_state <= SEED;
+                            
+//                            get_seed <= 1;
+//                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
+//                            tx_data_valid <= 1;
+//                            tx_sel <= 1;
                         end
                         else begin
                             // For unrecognized commands, echo back the last character received
@@ -179,15 +199,64 @@ module command_processor(
                             tx_cmd <= 8'h00;
                             tx_data_valid <= 1;
                             tx_sel <= 1;
-                        end
+                            
+                            next_state <= IDLE;
+                        end                  
+                end
+                
+                RNG: begin
+                    //keep these here or when processing cmd
+                    //process_rng <= 1;
+                      
+                    case (rand_num[digit_count-1])
+                        1'b0: tx_cmd <= 8'h30;
+                        1'b1: tx_cmd <= 8'h31;                        
+                    endcase
+                    
+                    if (tx_data_done)
+                        digit_count <= digit_count - 1;
+                    
+                    //not sure if signed or unsigned
+                    if (digit_count <=0 || digit_count > 33) begin
+                        next_state <= IDLE;
+                    end
+                    else begin
+                        tx_data_valid <= 1;
+                        tx_sel <= 1;
+                    end
+
+                end
+                
+                TEST: begin
+                    set_custom_seed <= 1;
+                    custom_seed <= `TEST_SEED; // Using a predefined test seed
+                    tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
+                    tx_data_valid <= 1;
+                    tx_sel <= 1;
+                
                     next_state <= IDLE;
                 end
+                
+                SEED: begin
+                    get_seed <= 1;
+                    tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
+                    tx_data_valid <= 1;
+                    tx_sel <= 1;
+                    
+                    next_state <= IDLE;
+                end
+                               
             endcase
             current_state <= next_state;
         end
     end
-
-
+    
     // Additional logic for handling commands, setting custom_seed, etc., goes here
+    rng_module rng_gen
+    (
+        .clk(clk),
+        .reset(reset), 
+        .random_number() // use rand_num
+    );
 
 endmodule
