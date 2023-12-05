@@ -118,10 +118,10 @@ module command_processor(
 //            tx_cmd <= 8'h00;
             
             //echo logic and tx mux
-//            if (rx_data_ready) begin
-//                tx_echo = rx_data;
-//                tx_data_valid <= 1;
-//            end
+            if (rx_data_ready) begin
+                tx_echo = rx_data;
+                tx_data_valid <= 1;
+            end
             
             if (tx_sel)
                 tx_data = tx_cmd;
@@ -278,8 +278,8 @@ module command_processor(
                 end
                 
                 TEST: begin
-                    set_custom_seed <= 1;
-                    custom_seed <= `TEST_SEED; // Using a predefined test seed
+                    //set_custom_seed <= 1;
+                    //custom_seed <= `TEST_SEED; // Using a predefined test seed
                     tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
                     tx_data_valid <= 1;
                     tx_sel <= 1;
