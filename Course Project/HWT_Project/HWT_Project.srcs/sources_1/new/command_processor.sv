@@ -77,6 +77,9 @@ module command_processor(
     logic [31:0] rand_num; 
     logic [31:0] seed_used;
     logic [6:0] digit_count;
+    logic [3:0] nibble;
+    logic [3:0] nibble_count;
+    
     
 
     // State machine for command processing
@@ -97,6 +100,7 @@ module command_processor(
             next_state <= IDLE;
             char_count <= 0;
             digit_count <=32;
+            nibble_count <=0;
             for (i = 0; i < MAX_CHARS; i++) command_buffer[i] <= 8'd0;
             tx_sel <= 0;
             tx_echo <= 8'h00; // Default UART transmit data
@@ -164,6 +168,7 @@ module command_processor(
                             
                             next_state <= RNG;
                             digit_count <= 32;
+                            nibble_count <=0;
                             
                             //maybe keep some or all of these here?
                             process_rng <= 1;
@@ -190,6 +195,7 @@ module command_processor(
                                  
                             next_state <= SEED;
                             digit_count <= 32;
+                            nibble_count <=0;
                             
 //                            get_seed <= 1;
 //                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
@@ -208,24 +214,67 @@ module command_processor(
                 end
                 
                 RNG: begin
-                    //start printing out the random number
-                    case (rand_num[digit_count-1])
-                        1'b0: tx_cmd <= 8'h30;
-                        1'b1: tx_cmd <= 8'h31;                        
+//                    //start printing out the random number (binary)
+//                    case (rand_num[digit_count-1])
+//                        1'b0: tx_cmd <= 8'h30;
+//                        1'b1: tx_cmd <= 8'h31;                        
+//                    endcase
+                    
+//                    if (tx_data_done)
+//                        digit_count <= digit_count - 1;
+                    
+//                    //not sure if signed or unsigned
+//                    if (digit_count <=0 || digit_count > 33) begin
+//                        next_state <= IDLE;
+//                    end
+//                    else begin
+//                        tx_data_valid <= 1;
+//                        tx_sel <= 1;
+//                    end
+                    
+                    //start printing out the random number (hex)
+                    case (nibble_count)
+                        3'd0: nibble = rand_num[31:28];
+                        3'd1: nibble = rand_num[27:24];
+                        3'd2: nibble = rand_num[23:20];
+                        3'd3: nibble = rand_num[19:16];
+                        3'd4: nibble = rand_num[15:12];
+                        3'd5: nibble = rand_num[11:8];
+                        3'd6: nibble = rand_num[7:4];
+                        3'd7: nibble = rand_num[3:0];
+                    endcase
+                    
+                    case (nibble)
+                        3'h0: tx_cmd <= 8'h30;
+                        3'h1: tx_cmd <= 8'h31;
+                        3'h2: tx_cmd <= 8'h32;
+                        3'h3: tx_cmd <= 8'h33;
+                        3'h4: tx_cmd <= 8'h34;
+                        3'h5: tx_cmd <= 8'h35;
+                        3'h6: tx_cmd <= 8'h36;
+                        3'h7: tx_cmd <= 8'h37;
+                        3'h8: tx_cmd <= 8'h38;
+                        3'h9: tx_cmd <= 8'h39;
+                        3'hA: tx_cmd <= 8'h41;
+                        3'hB: tx_cmd <= 8'h42;
+                        3'hC: tx_cmd <= 8'h43;
+                        3'hD: tx_cmd <= 8'h44;
+                        3'hE: tx_cmd <= 8'h45;
+                        3'hF: tx_cmd <= 8'h46;
                     endcase
                     
                     if (tx_data_done)
-                        digit_count <= digit_count - 1;
+                        nibble_count <= nibble_count + 1;
                     
                     //not sure if signed or unsigned
-                    if (digit_count <=0 || digit_count > 33) begin
+                    if (nibble_count >=8 ) begin
                         next_state <= IDLE;
                     end
                     else begin
                         tx_data_valid <= 1;
                         tx_sel <= 1;
-                    end
-
+                    end                   
+                    
                 end
                 
                 TEST: begin
@@ -239,23 +288,66 @@ module command_processor(
                 end
                 
                 SEED: begin
-                    //start printing out the seed
-                    case (seed_used[digit_count-1])
-                        1'b0: tx_cmd <= 8'h30;
-                        1'b1: tx_cmd <= 8'h31;                        
+//                    //start printing out the seed
+//                    case (seed_used[digit_count-1])
+//                        1'b0: tx_cmd <= 8'h30;
+//                        1'b1: tx_cmd <= 8'h31;                        
+//                    endcase
+                    
+//                    if (tx_data_done)
+//                        digit_count <= digit_count - 1;
+                    
+//                    //not sure if signed or unsigned
+//                    if (digit_count <=0 || digit_count > 33) begin
+//                        next_state <= IDLE;
+//                    end
+//                    else begin
+//                        tx_data_valid <= 1;
+//                        tx_sel <= 1;
+//                    end
+
+                    //start printing out the random number (hex)
+                    case (nibble_count)
+                        3'd0: nibble = rand_num[31:28];
+                        3'd1: nibble = rand_num[27:24];
+                        3'd2: nibble = rand_num[23:20];
+                        3'd3: nibble = rand_num[19:16];
+                        3'd4: nibble = rand_num[15:12];
+                        3'd5: nibble = rand_num[11:8];
+                        3'd6: nibble = rand_num[7:4];
+                        3'd7: nibble = rand_num[3:0];
+                    endcase
+                    
+                    case (nibble)
+                        3'h0: tx_cmd <= 8'h30;
+                        3'h1: tx_cmd <= 8'h31;
+                        3'h2: tx_cmd <= 8'h32;
+                        3'h3: tx_cmd <= 8'h33;
+                        3'h4: tx_cmd <= 8'h34;
+                        3'h5: tx_cmd <= 8'h35;
+                        3'h6: tx_cmd <= 8'h36;
+                        3'h7: tx_cmd <= 8'h37;
+                        3'h8: tx_cmd <= 8'h38;
+                        3'h9: tx_cmd <= 8'h39;
+                        3'hA: tx_cmd <= 8'h41;
+                        3'hB: tx_cmd <= 8'h42;
+                        3'hC: tx_cmd <= 8'h43;
+                        3'hD: tx_cmd <= 8'h44;
+                        3'hE: tx_cmd <= 8'h45;
+                        3'hF: tx_cmd <= 8'h46;
                     endcase
                     
                     if (tx_data_done)
-                        digit_count <= digit_count - 1;
+                        nibble_count <= nibble_count + 1;
                     
                     //not sure if signed or unsigned
-                    if (digit_count <=0 || digit_count > 33) begin
+                    if (nibble_count >=8 ) begin
                         next_state <= IDLE;
                     end
                     else begin
                         tx_data_valid <= 1;
                         tx_sel <= 1;
-                    end
+                    end                   
                 end
                                
             endcase
