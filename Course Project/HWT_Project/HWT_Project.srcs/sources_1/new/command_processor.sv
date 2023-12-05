@@ -72,9 +72,8 @@ module command_processor(
     
     //RNG signals
     //logic [31:0] rand_num = 32'hCAFE;
-    //logic [31:0] rand_num = 32'hEFAC;
-    //logic [31:0] rand_num = 32'hCCCC6666;
-    logic [31:0] rand_num; 
+    //logic [31:0] rand_num = 32'hCCCC9999;
+    logic [31:0] rand_num;
     logic [31:0] seed_used;
     logic [6:0] digit_count;
     logic [3:0] nibble;
@@ -245,22 +244,22 @@ module command_processor(
                     endcase
                     
                     case (nibble)
-                        3'h0: tx_cmd <= 8'h30;
-                        3'h1: tx_cmd <= 8'h31;
-                        3'h2: tx_cmd <= 8'h32;
-                        3'h3: tx_cmd <= 8'h33;
-                        3'h4: tx_cmd <= 8'h34;
-                        3'h5: tx_cmd <= 8'h35;
-                        3'h6: tx_cmd <= 8'h36;
-                        3'h7: tx_cmd <= 8'h37;
-                        3'h8: tx_cmd <= 8'h38;
-                        3'h9: tx_cmd <= 8'h39;
-                        3'hA: tx_cmd <= 8'h41;
-                        3'hB: tx_cmd <= 8'h42;
-                        3'hC: tx_cmd <= 8'h43;
-                        3'hD: tx_cmd <= 8'h44;
-                        3'hE: tx_cmd <= 8'h45;
-                        3'hF: tx_cmd <= 8'h46;
+                        4'h0: tx_cmd <= 8'h30;
+                        4'h1: tx_cmd <= 8'h31;
+                        4'h2: tx_cmd <= 8'h32;
+                        4'h3: tx_cmd <= 8'h33;
+                        4'h4: tx_cmd <= 8'h34;
+                        4'h5: tx_cmd <= 8'h35;
+                        4'h6: tx_cmd <= 8'h36;
+                        4'h7: tx_cmd <= 8'h37;
+                        4'h8: tx_cmd <= 8'h38;
+                        4'h9: tx_cmd <= 8'h39;
+                        4'hA: tx_cmd <= 8'h41;
+                        4'hB: tx_cmd <= 8'h42;
+                        4'hC: tx_cmd <= 8'h43;
+                        4'hD: tx_cmd <= 8'h44;
+                        4'hE: tx_cmd <= 8'h45;
+                        4'hF: tx_cmd <= 8'h46;
                     endcase
                     
                     if (tx_data_done)
@@ -308,33 +307,33 @@ module command_processor(
 
                     //start printing out the random number (hex)
                     case (nibble_count)
-                        3'd0: nibble = rand_num[31:28];
-                        3'd1: nibble = rand_num[27:24];
-                        3'd2: nibble = rand_num[23:20];
-                        3'd3: nibble = rand_num[19:16];
-                        3'd4: nibble = rand_num[15:12];
-                        3'd5: nibble = rand_num[11:8];
-                        3'd6: nibble = rand_num[7:4];
-                        3'd7: nibble = rand_num[3:0];
+                        3'd0: nibble = seed_used[31:28];
+                        3'd1: nibble = seed_used[27:24];
+                        3'd2: nibble = seed_used[23:20];
+                        3'd3: nibble = seed_used[19:16];
+                        3'd4: nibble = seed_used[15:12];
+                        3'd5: nibble = seed_used[11:8];
+                        3'd6: nibble = seed_used[7:4];
+                        3'd7: nibble = seed_used[3:0];
                     endcase
                     
                     case (nibble)
-                        3'h0: tx_cmd <= 8'h30;
-                        3'h1: tx_cmd <= 8'h31;
-                        3'h2: tx_cmd <= 8'h32;
-                        3'h3: tx_cmd <= 8'h33;
-                        3'h4: tx_cmd <= 8'h34;
-                        3'h5: tx_cmd <= 8'h35;
-                        3'h6: tx_cmd <= 8'h36;
-                        3'h7: tx_cmd <= 8'h37;
-                        3'h8: tx_cmd <= 8'h38;
-                        3'h9: tx_cmd <= 8'h39;
-                        3'hA: tx_cmd <= 8'h41;
-                        3'hB: tx_cmd <= 8'h42;
-                        3'hC: tx_cmd <= 8'h43;
-                        3'hD: tx_cmd <= 8'h44;
-                        3'hE: tx_cmd <= 8'h45;
-                        3'hF: tx_cmd <= 8'h46;
+                        4'h0: tx_cmd <= 8'h30;
+                        4'h1: tx_cmd <= 8'h31;
+                        4'h2: tx_cmd <= 8'h32;
+                        4'h3: tx_cmd <= 8'h33;
+                        4'h4: tx_cmd <= 8'h34;
+                        4'h5: tx_cmd <= 8'h35;
+                        4'h6: tx_cmd <= 8'h36;
+                        4'h7: tx_cmd <= 8'h37;
+                        4'h8: tx_cmd <= 8'h38;
+                        4'h9: tx_cmd <= 8'h39;
+                        4'hA: tx_cmd <= 8'h41;
+                        4'hB: tx_cmd <= 8'h42;
+                        4'hC: tx_cmd <= 8'h43;
+                        4'hD: tx_cmd <= 8'h44;
+                        4'hE: tx_cmd <= 8'h45;
+                        4'hF: tx_cmd <= 8'h46;
                     endcase
                     
                     if (tx_data_done)

@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `define CLOCK_COUNTER_WIDTH 64          //Width of the clock
-`define TEST_SEED           32'h85ad    //Test Seed
+`define TEST_SEED           32'hAFC7    //Test Seed
 `define TIME_THRESHOLD      32'hFFFF     // Time threshold for reseeding
 `define TRUE                1'b1
 `define FALSE               1'b0
