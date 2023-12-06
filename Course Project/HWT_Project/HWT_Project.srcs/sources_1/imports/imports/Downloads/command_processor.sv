@@ -71,8 +71,6 @@ module command_processor(
     logic tx_sel = 0;
     
     //RNG signals
-    //logic [31:0] rand_num = 32'hCAFE;
-    //logic [31:0] rand_num = 32'hCCCC9999;
     logic [31:0] rand_num;
     logic [31:0] seed_used;
     logic [6:0] digit_count;
@@ -112,9 +110,7 @@ module command_processor(
             set_custom_seed <= 0;
             get_seed <= 0;
             tx_data_valid <= 0;
-//            tx_sel <= 0;
-//            tx_echo <= 8'h00; // Default UART transmit data
-//            tx_cmd <= 8'h00;
+
             
             //echo logic and tx mux
             if (rx_data_ready) begin
@@ -164,42 +160,26 @@ module command_processor(
                         if (command_buffer[0] == 8'h52 && // ASCII for 'R'
                             command_buffer[1] == 8'h4E && // ASCII for 'N'
                             command_buffer[2] == 8'h47) begin // ASCII for 'G'
-                            
-                            next_state <= RNG;
+                                                        next_state <= RNG;
                             digit_count <= 32;
                             nibble_count <=0;
-                            
-                            //maybe keep some or all of these here?
                             process_rng <= 1;
-//                            tx_cmd <= 8'h52; // ASCII for 'R', as a placeholder response
-//                            tx_data_valid <= 1;
-//                            tx_sel <= 1;
+
                         end
                         // Check for '.TEST' command (simplified, does not parse 'num')
                         else if (command_buffer[0] == 8'h54 && // ASCII for 'T'
                                  command_buffer[1] == 8'h45 && // ASCII for 'E'
                                  command_buffer[2] == 8'h53) begin // ASCII for 'S'
-                            next_state <= TEST;
-                            
-//                            set_custom_seed <= 1;
-//                            custom_seed <= `TEST_SEED; // Using a predefined test seed
-//                            tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
-//                            tx_data_valid <= 1;
-//                            tx_sel <= 1;
+                            next_state <= TEST;                            
                         end
                         // Check for '.SEED' command
                         else if (command_buffer[0] == 8'h53 && // ASCII for 'S'
                                  command_buffer[1] == 8'h45 && // ASCII for 'E'
                                  command_buffer[2] == 8'h45) begin // ASCII for 'E'
-                                 
                             next_state <= SEED;
                             digit_count <= 32;
-                            nibble_count <=0;
-                            
-//                            get_seed <= 1;
-//                            tx_cmd <= 8'h53; // ASCII for 'S', as a placeholder response
-//                            tx_data_valid <= 1;
-//                            tx_sel <= 1;
+                            nibble_count <=0;                       
+
                         end
                         else begin
                             // For unrecognized commands, echo back the last character received
@@ -213,23 +193,6 @@ module command_processor(
                 end
                 
                 RNG: begin
-//                    //start printing out the random number (binary)
-//                    case (rand_num[digit_count-1])
-//                        1'b0: tx_cmd <= 8'h30;
-//                        1'b1: tx_cmd <= 8'h31;                        
-//                    endcase
-                    
-//                    if (tx_data_done)
-//                        digit_count <= digit_count - 1;
-                    
-//                    //not sure if signed or unsigned
-//                    if (digit_count <=0 || digit_count > 33) begin
-//                        next_state <= IDLE;
-//                    end
-//                    else begin
-//                        tx_data_valid <= 1;
-//                        tx_sel <= 1;
-//                    end
                     
                     //start printing out the random number (hex)
                     case (nibble_count)
@@ -265,7 +228,7 @@ module command_processor(
                     if (tx_data_done)
                         nibble_count <= nibble_count + 1;
                     
-                    //not sure if signed or unsigned
+                    //if all nibbles are printed, return to IDLE
                     if (nibble_count >=8 ) begin
                         next_state <= IDLE;
                     end
@@ -277,7 +240,12 @@ module command_processor(
                 end
                 
                 TEST: begin
-                    //set_custom_seed <= 1;
+                    //This section was intended to be a state where you could manually
+                    //seed the PRNG by capturing a value through UART and feeding it to
+                    //the PRNG module. It is currently left not fully implemented because
+                    //of time constraints.
+                    
+                    set_custom_seed <= 1;
                     //custom_seed <= `TEST_SEED; // Using a predefined test seed
                     tx_cmd <= 8'h54; // ASCII for 'T', as a placeholder response
                     tx_data_valid <= 1;
@@ -287,23 +255,6 @@ module command_processor(
                 end
                 
                 SEED: begin
-//                    //start printing out the seed
-//                    case (seed_used[digit_count-1])
-//                        1'b0: tx_cmd <= 8'h30;
-//                        1'b1: tx_cmd <= 8'h31;                        
-//                    endcase
-                    
-//                    if (tx_data_done)
-//                        digit_count <= digit_count - 1;
-                    
-//                    //not sure if signed or unsigned
-//                    if (digit_count <=0 || digit_count > 33) begin
-//                        next_state <= IDLE;
-//                    end
-//                    else begin
-//                        tx_data_valid <= 1;
-//                        tx_sel <= 1;
-//                    end
 
                     //start printing out the random number (hex)
                     case (nibble_count)
@@ -339,7 +290,7 @@ module command_processor(
                     if (tx_data_done)
                         nibble_count <= nibble_count + 1;
                     
-                    //not sure if signed or unsigned
+                    //if all nibbles are printed, return to IDLE
                     if (nibble_count >=8 ) begin
                         next_state <= IDLE;
                     end
@@ -359,6 +310,7 @@ module command_processor(
     (
         .clk(clk),
         .reset(reset),
+        .test_seed_flag(set_custom_seed),
         .uart_rx(process_rng), 
         .random_number(rand_num), // use rand_num
         .seed_used(seed_used)
